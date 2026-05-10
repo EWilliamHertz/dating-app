@@ -1,0 +1,40 @@
+{
+  "name": "dating-app",
+  "version": "1.0.0",
+  "description": "International dating platform with location-based matching",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio"
+  },
+  "keywords": ["dating", "social", "location-based"],
+  "author": "Ernst-William Hertz",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.3.0",
+    "@types/react": "^19.0.0",
+    "@types/node": "^20.0.0",
+    "prisma": "^5.7.0",
+    "@prisma/client": "^5.7.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "lucide-react": "^0.344.0",
+    "dotenv": "^16.3.0",
+    "zod": "^3.22.0",
+    "next-auth": "^5.0.0",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2"
+  }
+}

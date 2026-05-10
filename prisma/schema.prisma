@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  password          String
+  username          String     @unique
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime
+  bio               String?    @db.Text
+  profileImages     String[]   // Array of image URLs
+  
+  // Location data
+  latitude          Float
+  longitude         Float
+  country           String
+  city              String
+  timezone          String     // e.g., "America/New_York"
+  
+  // Preferences
+  gender            Gender
+  seekingGender     Gender[]
+  minAge            Int        @default(18)
+  maxAge            Int        @default(99)
+  maxDistance       Int?       // in kilometers, null means any distance
+  preferredCountries String[]  // Array of country codes
+  
+  // Profile settings
+  isVerified        Boolean    @default(false)
+  isActive          Boolean    @default(true)
+  lastSeen          DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  
+  // Relations
+  sentLikes         Like[]     @relation("LikeSender")
+  receivedLikes     Like[]     @relation("LikeReceiver")
+  sentMessages      Message[]  @relation("MessageSender")
+  receivedMessages  Message[]  @relation("MessageReceiver")
+  blockedUsers      Block[]    @relation("BlockingUser")
+  blockedByUsers    Block[]    @relation("BlockedUser")
+  
+  @@index([email])
+  @@index([username])
+  @@index([country])
+  @@index([latitude, longitude])
+  @@fulltext([bio, firstName, lastName])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  senderId  String
+  sender    User     @relation("LikeSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver  User     @relation("LikeReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  @@unique([senderId, receiverId])
+  @@index([receiverId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  senderId  String
+  sender    User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver  User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  content   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@index([receiverId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockingUserId String
+  blockingUser User @relation("BlockingUser", fields: [blockingUserId], references: [id], onDelete: Cascade)
+  blockedUserId String
+  blockedUser User @relation("BlockedUser", fields: [blockedUserId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  @@unique([blockingUserId, blockedUserId])
+  @@index([blockedUserId])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  reporterId String
+  reportedUserId String
+  reason    String
+  description String? @db.Text
+  status    ReportStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([reportedUserId])
+  @@index([status])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
