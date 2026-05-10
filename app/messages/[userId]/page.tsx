@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, Send, Clock } from 'lucide-react'
 
 interface Message {
@@ -31,7 +32,8 @@ function getLocalTime(timezone: string) {
   } catch { return '' }
 }
 
-export default function ChatPage({ params }: { params: { userId: string } }) {
+export default function ChatPage() {
+  const params = useParams()
   const { data: session } = useSession({ required: true })
   const myId = (session?.user as any)?.id
   const [messages, setMessages] = useState<Message[]>([])
@@ -40,12 +42,13 @@ export default function ChatPage({ params }: { params: { userId: string } }) {
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const userId = Array.isArray(params.userId) ? params.userId[0] : params.userId
 
   useEffect(() => {
     loadMessages()
     const interval = setInterval(loadMessages, 5000)
     return () => clearInterval(interval)
-  }, [params.userId])
+  }, [userId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -53,7 +56,7 @@ export default function ChatPage({ params }: { params: { userId: string } }) {
 
   async function loadMessages() {
     try {
-      const res = await fetch(`/api/messages/${params.userId}`)
+      const res = await fetch(`/api/messages/${userId}`)
       if (res.ok) {
         const data = await res.json()
         setMessages(data.messages || [])
@@ -73,7 +76,7 @@ export default function ChatPage({ params }: { params: { userId: string } }) {
       const res = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ receiverId: params.userId, content }),
+        body: JSON.stringify({ receiverId: userId, content }),
       })
       if (res.ok) await loadMessages()
     } catch {}
