@@ -5,12 +5,16 @@ import { authOptions } from '@/lib/authOptions'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const { userId } = await params
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const myId = (session.user as any).id
-    const otherId = params.userId
+    const otherId = userId
 
     const messages = await prisma.message.findMany({
       where: {
