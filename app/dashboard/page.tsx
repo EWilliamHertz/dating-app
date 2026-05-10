@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
-import { Heart, X, MapPin, Clock, Globe, User, MessageCircle, LogOut, Settings } from 'lucide-react'
+import { Heart, X, MapPin, Clock, User, MessageCircle, LogOut } from 'lucide-react'
 
 interface Profile {
   id: string
@@ -46,7 +46,6 @@ export default function DashboardPage() {
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [liked, setLiked] = useState<Set<string>>(new Set())
   const [actionMsg, setActionMsg] = useState<{ text: string; type: 'like' | 'pass' } | null>(null)
   const [filterMode, setFilterMode] = useState<'radius' | 'country'>('radius')
   const [maxDistance, setMaxDistance] = useState(200)
@@ -84,7 +83,6 @@ export default function DashboardPage() {
     const profile = profiles[currentIndex]
     if (!profile) return
     setActionMsg({ text: '❤️ Liked!', type: 'like' })
-    setLiked(prev => new Set([...prev, profile.id]))
     try {
       await fetch('/api/matches/like', {
         method: 'POST',

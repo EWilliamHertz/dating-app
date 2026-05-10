@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/authOptions'
 const prisma = new PrismaClient()
 
 // GET /api/messages - Get all conversations
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
