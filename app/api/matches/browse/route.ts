@@ -4,7 +4,7 @@ import { calculateDistance, calculateAge } from '@/lib/utils'
 
 const prisma = new PrismaClient()
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const userId = searchParams.get('userId')
