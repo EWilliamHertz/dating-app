@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    const seekingGender: Prisma.UserCreateseekingGenderInput = validatedData.gender === 'MALE' ? ['FEMALE'] :
-                          validatedData.gender === 'FEMALE' ? ['MALE'] :
-                          ['MALE', 'FEMALE', 'NON_BINARY']
+    const seekingGender = validatedData.gender === 'MALE' ? { set: ['FEMALE'] } :
+                          validatedData.gender === 'FEMALE' ? { set: ['MALE'] } :
+                          { set: ['MALE', 'FEMALE', 'NON_BINARY'] }
 
     const user = await prisma.user.create({
       data: {
