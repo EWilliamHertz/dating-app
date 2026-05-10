@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Gender } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    const seekingGender = validatedData.gender === 'MALE' ? { set: ['FEMALE'] } :
+ const seekingGender: { set: Gender[] } = validatedData.gender === 'MALE' ? { set: ['FEMALE'] } :
                           validatedData.gender === 'FEMALE' ? { set: ['MALE'] } :
                           { set: ['MALE', 'FEMALE', 'NON_BINARY'] }
 
