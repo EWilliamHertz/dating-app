@@ -55,7 +55,7 @@ model User {
   @@index([username])
   @@index([country])
   @@index([latitude, longitude])
-  @@fulltext([bio, firstName, lastName])
+  // Full-text search can be added later with PostgreSQL native features
 }
 
 model Like {
