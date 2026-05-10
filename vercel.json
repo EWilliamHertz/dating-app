@@ -3,28 +3,24 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "env": [
-    {
-      "key": "DATABASE_URL",
+  "env": {
+    "DATABASE_URL": {
       "value": "",
       "type": "secret"
     },
-    {
-      "key": "NEXTAUTH_SECRET",
+    "NEXTAUTH_SECRET": {
       "value": "",
       "type": "secret"
     },
-    {
-      "key": "NEXTAUTH_URL",
+    "NEXTAUTH_URL": {
       "value": "",
       "type": "string"
     },
-    {
-      "key": "NEXT_PUBLIC_API_URL",
+    "NEXT_PUBLIC_API_URL": {
       "value": "",
       "type": "string"
     }
-  ],
+  },
   "regions": ["sfo1"],
   "public": false
 }
