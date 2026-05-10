@@ -42,7 +42,7 @@ function getLocalTime(timezone: string) {
 }
 
 export default function ProfilePage() {
-  const { data: session } = useSession({ required: true })
+  useSession({ required: true })
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
